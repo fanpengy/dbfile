@@ -2,7 +2,7 @@ package com.db.file.model;
 
 import java.io.Serializable;
 
-public class BaseModel implements Serializable {
+public abstract class BaseModel implements Serializable {
     private Long id;
 
     public Long getId() {
