@@ -1,10 +1,7 @@
 package com.db.file.context;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Context {
 
@@ -14,13 +11,15 @@ public class Context {
 
     private final static Object lock = new Object();
 
-    private static final String FILENAME = "C:/db-file";
+    private static final String FILENAME = "/db-file";
 
     private Context()  {
         map = new HashMap<>();//防止后面调用put时报空指针异常
 
+        File file = new File(System.getProperty("catalina.home") + FILENAME);
         try {
-            File file = new File(FILENAME);
+
+            System.out.println("生成的文件在" + System.getProperty("catalina.home"));
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -36,8 +35,14 @@ public class Context {
 
         }
         catch (Exception e) {
-            System.out.println("初始化失败" + e.getMessage());
-            System.exit(1);
+            System.out.println("初始化失败，文件将被删除，所有数据丢失" + e.getMessage());
+            file.delete();
+            map.clear();
+            try {
+                file.createNewFile();
+            } catch (Exception ex) {
+                System.out.println("重新创建文件异常" + ex.getMessage());
+            }
         }
     }
 
